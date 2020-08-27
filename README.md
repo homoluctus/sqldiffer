@@ -1,5 +1,9 @@
 # sqldiffer
 
+![PyPI](https://img.shields.io/pypi/v/sqldiffer)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sqldiffer)
+![GitHub](https://img.shields.io/github/license/homoluctus/sqldiffer)
+
 Check the difference of MySQL schema (CREATE TABLE)
 
 <!-- TOC depthFrom:2 -->
