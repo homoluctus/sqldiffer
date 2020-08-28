@@ -27,14 +27,14 @@ class Connection:
         self.close()
 
     def close(self) -> None:
-        if self.conn:
-            self.conn.close()
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
 
     @property
     def conn(self) -> PyMySQLConnection:
         if self._conn is None:
             self._conn = self.connect()
-
         return self._conn
 
     def connect(self) -> PyMySQLConnection:
