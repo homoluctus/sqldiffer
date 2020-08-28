@@ -10,7 +10,7 @@ from sqldiffer.logger import get_logger
 logger = get_logger(__name__)
 
 
-def main() -> None:
+def run() -> None:
     options = parse_options()
     source_conn = Connection(options.source)
 
@@ -23,6 +23,7 @@ def main() -> None:
 
     tables = source_conn.get_tables()
     if not tables:
+        source_conn.close()
         logger.error('Not Found tables on server1')
         return
 
@@ -30,6 +31,7 @@ def main() -> None:
     try:
         target_conn.connect()
     except DbConnectError as err:
+        source_conn.close()
         logger.error(err)
         logger.error('Failed to connect to server2')
         sys.exit(1)
@@ -45,6 +47,24 @@ def main() -> None:
         differ = Differ(source, target, skipper=skipper)
         if differ.check() is False:
             try:
-                differ.to_html(f'{options.output_dir}/{table}.html')
+                differ.to_html(f'{table}.html', options.output_dir)
             except Exception as err:
                 logger.error(err)
+
+    source_conn.close()
+    target_conn.close()
+
+
+def main() -> None:
+    try:
+        run()
+    except KeyboardInterrupt:
+        logger.error('Abort')
+        sys.exit(1)
+    except Exception as err:
+        logger.error(err)
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()
