@@ -89,6 +89,6 @@ class Connection:
             return None
 
         if isinstance(raw_result, dict) is False \
-                or (sql := raw_result.get('Create Table')):
+                or (sql := raw_result.get('Create Table')) is None:
             return None
         return sql
