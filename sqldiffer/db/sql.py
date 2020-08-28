@@ -5,5 +5,5 @@ SHOW TABLES;
 '''
 
 SHOW_CREATE_TABLE = '''
-SHOW CREATE TABLE %(table)s;
+SHOW CREATE TABLE {table};
 '''

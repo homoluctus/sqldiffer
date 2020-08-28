@@ -81,11 +81,9 @@ class Connection:
             for result in raw_results]
 
     def get_schema(self, table: str) -> Optional[str]:
-        params = {'table': table}
-
         try:
             raw_results = self.fetch(
-                SHOW_CREATE_TABLE, params=params, whole=False)
+                SHOW_CREATE_TABLE.format(table=table), whole=False)
         except pymysql.ProgrammingError as err:
             logger.error(err)
             return None
