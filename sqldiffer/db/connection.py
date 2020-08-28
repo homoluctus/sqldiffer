@@ -82,14 +82,13 @@ class Connection:
 
     def get_schema(self, table: str) -> Optional[str]:
         try:
-            raw_results = self.fetch(
+            raw_result = self.fetch(
                 SHOW_CREATE_TABLE.format(table=table), whole=False)
         except pymysql.ProgrammingError as err:
             logger.error(err)
             return None
 
-        if not raw_results:
+        if isinstance(raw_result, dict) is False \
+                or (sql := raw_result.get('Create Table')):
             return None
-
-        result = raw_results['Create Table']
-        return result
+        return sql
