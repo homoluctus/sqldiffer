@@ -54,5 +54,5 @@ class Differ:
 
         os.makedirs(output_dir, mode=0o755, exist_ok=True)
         diff = HtmlDiff().make_file(source, target)
-        with open(filename, mode='wt') as fd:
+        with open(f'{output_dir}/{filename}', mode='wt') as fd:
             fd.write(diff)
