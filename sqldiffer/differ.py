@@ -1,4 +1,3 @@
-import os
 import re
 from dataclasses import dataclass
 from difflib import HtmlDiff
@@ -41,18 +40,17 @@ class Differ:
     skipper: Skipper = Skipper()
 
     def check(self) -> bool:
-        source = self.skipper.skip(self.source)
-        target = self.skipper.skip(self.target)
+        self.source = self.skipper.skip(self.source)
+        self.target = self.skipper.skip(self.target)
 
-        if source == target:
+        if self.source == self.target:
             return True
         return False
 
-    def to_html(self, filename: str, output_dir: str = os.getcwd()) -> None:
+    def to_html(self, filename: str) -> None:
         source = self.source.splitlines(keepends=True)
         target = self.target.splitlines(keepends=True)
 
-        os.makedirs(output_dir, mode=0o755, exist_ok=True)
         diff = HtmlDiff().make_file(source, target)
-        with open(filename, mode='wt') as fd:
+        with open(filename, mode='w') as fd:
             fd.write(diff)

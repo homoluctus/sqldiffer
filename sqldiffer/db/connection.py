@@ -27,14 +27,14 @@ class Connection:
         self.close()
 
     def close(self) -> None:
-        if self.conn:
-            self.conn.close()
+        if self._conn is not None:
+            self._conn.close()
+            self._conn = None
 
     @property
     def conn(self) -> PyMySQLConnection:
         if self._conn is None:
             self._conn = self.connect()
-
         return self._conn
 
     def connect(self) -> PyMySQLConnection:
@@ -81,17 +81,14 @@ class Connection:
             for result in raw_results]
 
     def get_schema(self, table: str) -> Optional[str]:
-        params = {'table': table}
-
         try:
-            raw_results = self.fetch(
-                SHOW_CREATE_TABLE, params=params, whole=False)
+            raw_result = self.fetch(
+                SHOW_CREATE_TABLE.format(table=table), whole=False)
         except pymysql.ProgrammingError as err:
             logger.error(err)
             return None
 
-        if not raw_results:
+        if isinstance(raw_result, dict) is False \
+                or (sql := raw_result.get('Create Table')) is None:
             return None
-
-        result = raw_results['Create Table']
-        return result
+        return sql
