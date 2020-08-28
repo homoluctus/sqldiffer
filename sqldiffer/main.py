@@ -1,3 +1,4 @@
+import os
 import sys
 
 from sqldiffer.cli import parse_options
@@ -39,6 +40,7 @@ def run() -> None:
     skipper = Skipper(
         auto_increment=options.auto_increment,
         charset=options.charset)
+    os.makedirs(options.output_dir, mode=0o755, exist_ok=True)
 
     for table in tables:
         source = source_conn.get_schema(table) or ''
@@ -47,7 +49,7 @@ def run() -> None:
         differ = Differ(source, target, skipper=skipper)
         if differ.check() is False:
             try:
-                differ.to_html(f'{table}.html', options.output_dir)
+                differ.to_html(f'{options.output_dir}/{table}.html')
             except Exception as err:
                 logger.error(err)
 
