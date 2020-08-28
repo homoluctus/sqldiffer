@@ -40,10 +40,10 @@ class Differ:
     skipper: Skipper = Skipper()
 
     def check(self) -> bool:
-        source = self.skipper.skip(self.source)
-        target = self.skipper.skip(self.target)
+        self.source = self.skipper.skip(self.source)
+        self.target = self.skipper.skip(self.target)
 
-        if source == target:
+        if self.source == self.target:
             return True
         return False
 
